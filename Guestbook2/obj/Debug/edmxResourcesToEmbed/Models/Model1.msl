@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="guestbookModelStoreContainer" CdmEntityContainer="guestbookEntities">
+    <EntitySetMapping Name="comments">
+      <EntityTypeMapping TypeName="guestbookModel.comment">
+        <MappingFragment StoreEntitySet="comments">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="continent" ColumnName="continent" />
+          <ScalarProperty Name="comment1" ColumnName="comment" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="edited" ColumnName="edited" />
+          <ScalarProperty Name="deleted" ColumnName="deleted" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
