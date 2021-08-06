@@ -59,8 +59,8 @@
                                 <asp:BoundField DataField="message" ItemStyle-Width="100%" HeaderText="Message" ItemStyle-CssClass="text-break" />
                                 <asp:BoundField DataField="edited" ItemStyle-Width="55" HeaderText="Edited" ReadOnly="True" />
                                 <asp:BoundField DataField="date" ItemStyle-Width="55" HeaderText="Date" ReadOnly="True" />
-                                <asp:CommandField ShowEditButton="true" ControlStyle-Width="30px" ItemStyle-CssClass="text-center" />  
-                                <asp:CommandField ShowDeleteButton="true" ControlStyle-Width="40px" ItemStyle-CssClass="text-center" />
+                                <asp:CommandField ShowEditButton="true"  ItemStyle-CssClass="text-center" />  
+                                <asp:CommandField ShowDeleteButton="true"  ItemStyle-CssClass="text-center" />
                             </Columns>
                         </asp:GridView>
                     </div>

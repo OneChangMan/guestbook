@@ -102,6 +102,8 @@ namespace Guestbook2
                 //    cmd.Parameters.AddWithValue("@continent", DBNull.Value);
                 //}
 
+                cmd.Parameters.AddWithValue("@continent", DBNull.Value);
+
                 cmd.Parameters.AddWithValue("@message", message.Text);
 
                 cmd.Parameters.AddWithValue("@date", DateTime.Now);
@@ -115,6 +117,7 @@ namespace Guestbook2
                 }
                 catch (Exception ex)
                 {
+                    Response.Write("<script>alert('Oops. Something went wrong.');</script>");
                     //run Something went wrong popup
                 }
             }
@@ -142,17 +145,18 @@ namespace Guestbook2
 
         protected void commentsGrid_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
-            //Response.Write(e.);
             int id = Convert.ToInt32(e.Values[0]);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                SqlCommand cmd = new SqlCommand("delete from comments where Id=" + id + "", connection);
+                SqlCommand cmd = new SqlCommand("UPDATE comments SET deleted = 1 WHERE Id=@id", connection);
+                cmd.Parameters.AddWithValue("@id", id);
+
                 connection.Open();
                 int temp = cmd.ExecuteNonQuery();
                 if (temp == 1)
                 {
-                    Response.Write("<script>alert('record deleted successfully');</script>");
+                    Response.Write("<script>alert('Record deleted successfully.');</script>");
                 }
                 connection.Close();
                 this.BindGrid();
