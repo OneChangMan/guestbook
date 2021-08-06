@@ -47,19 +47,25 @@ body {
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 }
 
-    #contact h3 {
-        display: block;
-        font-size: 30px;
-        font-weight: 300;
-        margin-bottom: 10px;
-    }
+#contact h3 {
+    display: block;
+    font-size: 30px;
+    font-weight: 300;
+    margin-bottom: 10px;
+}
 
-    #contact h4 {
-        margin: 5px 0 15px;
-        display: block;
-        font-size: 13px;
-        font-weight: 400;
-    }
+#contact h4 {
+    margin: 5px 0 15px;
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+table {
+    td {
+           word-break: break-word;
+       }
+}
 
 fieldset {
     border: medium none !important;

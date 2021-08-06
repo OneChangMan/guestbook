@@ -10,6 +10,7 @@ using System.Configuration;
 using System.Web.Security;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
+using System.Collections;
 
 namespace Guestbook2
 {
@@ -24,46 +25,14 @@ namespace Guestbook2
             if (!this.IsPostBack)
             {
                 this.BindGrid();
-                //this.getComments():
             }
-
-
-            //string commandText = "SELECT * FROM comments where deleted = 0";
-            //using (SqlConnection connection = new SqlConnection(connectionString))
-            //{
-            //    SqlCommand cmd = new SqlCommand(commandText, connection);
-
-            //    try
-            //    {
-            //        connection.Open();
-            //        Int32 rowsAffected = cmd.ExecuteNonQuery();
-
-            //        Response.Write(rowsAffected);
-
-
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Response.Write(ex);
-            //        //run Something went wrong popup
-            //    }
-            //}
-            //SqlConnection cnn = new SqlConnection(connectionString);
-            //this.cnn.Open();
-
-            //SqlCommand getPosts = cnn.CreateCommand();
-            //getPosts.CommandType = System.Data.CommandType.Text;
-            //getPosts.CommandText = "SELECT * FROM continents";
-
-            //Response.Write("Connection MAde");
-            //this.cnn.Close();
         }
 
         private void BindGrid()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT name, email, continent, message FROM comments"))
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM comments where deleted = 0 ORDER BY Id DESC;"))
                 {
                     using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
@@ -80,26 +49,26 @@ namespace Guestbook2
             }
         }
 
-        //private void getComments()
-        //{
-        //    using (SqlConnection connection = new SqlConnection(connectionString))
-        //    {
-        //        using (SqlCommand cmd = new SqlCommand("SELECT name, email, continent, message FROM comments"))
-        //        {
-        //            using (SqlDataAdapter sda = new SqlDataAdapter())
-        //            {
-        //                cmd.Connection = connection;
-        //                sda.SelectCommand = cmd;
-        //                using (DataTable dataTable = new DataTable())
-        //                {
-        //                    sda.Fill(dataTable);
-        //                    commentsGrid.DataSource = dataTable;
-        //                    commentsGrid.DataBind();
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+        private void getComments()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM comments where deleted = 0 ORDER BY Id DESC;e"))
+                {
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
+                    {
+                        cmd.Connection = connection;
+                        sda.SelectCommand = cmd;
+                        using (DataTable dataTable = new DataTable())
+                        {
+                            sda.Fill(dataTable);
+                            commentsGrid.DataSource = dataTable;
+                            commentsGrid.DataBind();
+                        }
+                    }
+                }
+            }
+        }
 
         protected void OnPaging(object sender, GridViewPageEventArgs e)
         {
@@ -109,7 +78,7 @@ namespace Guestbook2
 
         protected void Button1_Click(object sender, EventArgs e)
         {
-            string commandText = "INSERT INTO comments (name, email, continent, message)  VALUES (@name, @email, @continent, @message)";
+            string commandText = "INSERT INTO comments (name, email, continent, message, date)  VALUES (@name, @email, @continent, @message, @date)";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -125,15 +94,17 @@ namespace Guestbook2
                     cmd.Parameters.AddWithValue("@email", DBNull.Value);
                 }
 
-                if (continent.SelectedValue != "0")
-                {
-                    cmd.Parameters.AddWithValue("@continent", continent.SelectedValue);
-                } else
-                {
-                    cmd.Parameters.AddWithValue("@continent", DBNull.Value);
-                }
+                //if (continent.SelectedValue != "0")
+                //{
+                //    cmd.Parameters.AddWithValue("@continent", continent.SelectedValue);
+                //} else
+                //{
+                //    cmd.Parameters.AddWithValue("@continent", DBNull.Value);
+                //}
 
                 cmd.Parameters.AddWithValue("@message", message.Text);
+
+                cmd.Parameters.AddWithValue("@date", DateTime.Now);
 
                 try
                 {
@@ -153,7 +124,7 @@ namespace Guestbook2
         {
             name.Text = string.Empty;
             email.Text = string.Empty;
-            continent.SelectedValue = "0";
+            //continent.SelectedValue = "0";
             message.Text = string.Empty;
         }
 
@@ -161,6 +132,58 @@ namespace Guestbook2
         {
             /* Confirms that an HtmlForm control is rendered for the specified ASP.NET
                server control at run time. */
+        }
+
+        protected void commentsGrid_RowEditing(object sender, GridViewEditEventArgs e)
+        {
+            commentsGrid.EditIndex = e.NewEditIndex;
+            this.BindGrid();
+        }
+
+        protected void commentsGrid_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        {
+            //Response.Write(e.);
+            int id = Convert.ToInt32(e.Values[0]);
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("delete from comments where Id=" + id + "", connection);
+                connection.Open();
+                int temp = cmd.ExecuteNonQuery();
+                if (temp == 1)
+                {
+                    Response.Write("<script>alert('record deleted successfully');</script>");
+                }
+                connection.Close();
+                this.BindGrid();
+            }
+        }
+
+        protected void commentsGrid_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        {       
+            string rowId = (string)commentsGrid.Rows[e.RowIndex].Cells[0].Text;
+
+            Response.Write(commentsGrid.Rows[e.RowIndex].Cells[3].Text); // <--- doesn't return expected new data
+            //Response.Write(e.NewValues["message"].ToString());
+            //Response.Write(e.NewValues["Message"].ToString());
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                //SqlCommand cmd = new SqlCommand("update query...", connection);
+                
+                //connection.Open();
+                //int temp = cmd.ExecuteNonQuery();
+                //connection.Close();
+                
+                //this.BindGrid();
+            }
+             
+        }
+
+        protected void commentsGrid_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+        {
+            commentsGrid.EditIndex = -1;
+            this.BindGrid();
         }
     }
 }
